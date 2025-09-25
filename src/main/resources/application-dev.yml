@@ -1,0 +1,26 @@
+spring:
+    application:
+      name: jwt
+
+    # H2 Databaseの設定
+    h2:
+      console:
+        enabled: true
+        path: /h2-console
+
+    datasource:
+      driver-class-name: org.h2.Driver
+      url: ${DEV_DB_URL}
+      username: ${DEV_DB_USERNAME}
+      password: ${DEV_DB_PASSWORD}
+
+# MyBatisの設定
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+# JWTの設定
+# 実際のアプリケーションでは、このキーを環境変数などから安全に取得する必要があります。
+# 今は開発用として設定します。
+jwt:
+  secret: ${DEV_JWT_SECRET}
+  expiration: 86400000 # 24時間 (ミリ秒)
