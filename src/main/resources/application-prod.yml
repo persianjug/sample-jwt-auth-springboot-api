@@ -21,4 +21,7 @@ mybatis:
 # JWTの設定
 jwt:
   secret: ${PROD_JWT_SECRET}
-  expiration: 86400000 # 24時間 (ミリ秒)
+  # expiration: 86400000 # 24時間 (ミリ秒)
+  # refresh-expiration: 86400000 # 24時間 (ミリ秒)
+  expiration: 900000 # 15分
+  refresh-expiration: 172800000 #2日

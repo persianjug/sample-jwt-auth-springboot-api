@@ -8,4 +8,7 @@
   <select id="findByUsername" resultType="com.auth.jwt.entity.Account">
     SELECT * FROM accounts WHERE username = #{username}
   </select>
+  <select id="findById" resultType="com.auth.jwt.entity.Account">
+    SELECT * FROM accounts WHERE id = #{id}
+  </select>
 </mapper>

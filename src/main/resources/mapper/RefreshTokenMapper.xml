@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.jwt.mapper.RefreshTokenMapper">
+  <resultMap id="refreshTokenResult" type="com.auth.jwt.entity.RefreshToken">
+    <id property="id" column="id"/>
+    <result property="accountId" column="account_id"/>
+    <result property="token" column="token"/>
+    <result property="expiryDate" column="expiry_date"/>
+  </resultMap>
+  <select id="findByToken" resultMap="refreshTokenResult">
+        SELECT
+            id, account_id, token, expiry_date
+        FROM
+            refreshtoken
+        WHERE
+            token = #{token}
+    </select>
+  <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO refreshtoken (
+            account_id, token, expiry_date
+        ) VALUES (
+            #{accountId}, #{token}, #{expiryDate}
+        )
+    </insert>
+  <delete id="deleteByAccountId">
+        DELETE FROM
+            refreshtoken
+        WHERE
+            account_id = #{accountId}
+    </delete>
+</mapper>

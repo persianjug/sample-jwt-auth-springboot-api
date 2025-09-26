@@ -14,7 +14,7 @@ import com.auth.jwt.util.JwtTokenUtil;
 
 /**
  * アカウントに関連するビジネスロジックを管理するサービスです。
- * アカウントの登録やログインといった認証フローを処理します。
+ * アカウントの登録やログインといった認証フロー、およびアカウント情報の取得を処理します。
  */
 @Service
 public class AccountService {
@@ -113,4 +113,23 @@ public class AccountService {
     }
   }
 
+  /**
+   * ユーザー名に基づいてアカウント情報を取得します。
+   *
+   * @param username 検索するユーザー名
+   * @return ユーザー名に一致するアカウントエンティティ
+   */
+  public Account findByUsername(String username) {
+    return accountMapper.findByUsername(username);
+  }
+
+  /**
+   * アカウントIDに基づいてアカウント情報を取得します。
+   *
+   * @param id 検索するアカウントID
+   * @return アカウントIDに一致するアカウントエンティティ
+   */
+  public Account findById(Long id) {
+    return accountMapper.findById(id);
+  }
 }
