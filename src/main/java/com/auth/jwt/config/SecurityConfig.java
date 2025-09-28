@@ -1,5 +1,8 @@
 package com.auth.jwt.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.auth.jwt.filter.JwtRequestFilter;
 import com.auth.jwt.service.AccountUserDetailsService;
@@ -74,7 +80,9 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(authorize -> authorize
             // 認証エンドポイントとH2コンソールへのアクセスを許可
             .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
@@ -90,4 +98,34 @@ public class SecurityConfig {
 
     return http.build();
   }
+
+  /**
+   * CORS (Cross-Origin Resource Sharing) の設定情報を提供するBeanを定義します。
+   * Next.jsアプリケーション (http://localhost:3000) からのクロスオリジンリクエストを許可し、
+   * JWT認証に必要なヘッダーやメソッドを有効にします。
+   * 
+   * @return CORS設定を保持するCorsConfigurationSourceのインスタンス
+   */
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+
+    // Next.js のオリジンを許可
+    configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));
+
+    // プリフライトリクエスト (OPTIONS) を含め、すべての HTTP メソッドを許可
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+    // 認証情報（Cookie, Authorization ヘッダーなど）の送信を許可
+    configuration.setAllowCredentials(true);
+
+    // すべてのカスタムヘッダーを許可 (JWT トークンを含む Authorization ヘッダーも含む)
+    configuration.setAllowedHeaders(List.of("*"));
+
+    // /api/** のパスにこの CORS 設定を適用
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/api/**", configuration);
+    return source;
+  }
+
 }
